@@ -13,6 +13,11 @@
 		"email": "rsmit@daltcore.com",
 		"homepage": "https://daltcore.com/",
 		"role": "Developer"
+	},{
+		"name": "Kevin Kerstjens",
+		"email": "mail@finalbytes.nl",
+		"homepage": "https://finalbytes.nl/",
+		"role": "Developer"
 	}],
 	"require": {
 		"php": ">=5.6.0",
