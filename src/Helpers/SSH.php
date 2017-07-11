@@ -133,8 +133,6 @@ class SSH
                 throw new \Exception('The argument "--branch=" is required!', 128);
             }
 
-            dd(Git::getBranches());
-
             if (in_array($branch, Git::getBranches()) == false) {
                 throw new \Exception('The branch "'.$branch
                     .'" does not exists locally? Please `git pull`!', 128);
