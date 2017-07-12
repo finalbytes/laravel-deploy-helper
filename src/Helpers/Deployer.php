@@ -72,7 +72,7 @@ class Deployer
         // Pre-flight for shared stuff
         $items['directories'] = [];
         foreach ($shared['directories'] as $share) {
-            verbose('['.$stage.'] About to share direcroty "'.$home.'/current/'.$share.'"');
+            verbose('['.$stage.'] About to share directory "'.$home.'/current/'.$share.'"');
             $items['directories'][] = '[ -e '.$home.'/current/'.$share.' ] && cp -R -p '.$home.'/current/'
                 .$share.' '.$home.'/shared/'.$share;
             $items['directories'][] = '[ -e '.$home.'/shared/'.$share.' ] && cp -R -p '.$home.'/shared/'.
