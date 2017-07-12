@@ -42,7 +42,11 @@ class Deployer
         $keep = config('laravel-deploy-helper.stages.'.$stage.'.config.keep');
 
         // Check what releases are old and can be removed
-        ksort($ldh);
+        if ($ldh !== false) {
+            ksort($ldh);
+        } else {
+            $ldh = [];
+        }
         $original = $ldh;
         $ldh = array_slice($ldh, -$keep, $keep, true);
         $toRemove = array_diff_key($original, $ldh);
