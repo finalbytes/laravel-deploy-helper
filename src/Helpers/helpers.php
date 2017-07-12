@@ -55,6 +55,7 @@ if (!function_exists('cli_header')) {
 \t\________|\_______/ \__|  \__|
 \t    Laravel Deploy Helper
 \tRamon Smit <rsmit@daltcore.com>
-\t\t    1.0.6\n";
+\tKevin Kerstjens <mail@finalbytes.nl>
+\t\t    1.0.6a\n";
     }
 }
