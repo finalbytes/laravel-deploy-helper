@@ -42,14 +42,13 @@ class Deployer
         $keep = config('laravel-deploy-helper.stages.'.$stage.'.config.keep');
 
         // Check what releases are old and can be removed
-        if ($ldh !== false) {
+        // Adding the array fixed #1
+        if (is_array($ldh)) {
             ksort($ldh);
-        } else {
-            $ldh = [];
+            $original = $ldh;
+            $ldh = array_slice($ldh, -$keep, $keep, true);
+            $toRemove = array_diff_key($original, $ldh);
         }
-        $original = $ldh;
-        $ldh = array_slice($ldh, -$keep, $keep, true);
-        $toRemove = array_diff_key($original, $ldh);
 
         // setup ssh connection to remote
         $connection = SSH::instance()->into($stage);
@@ -63,10 +62,13 @@ class Deployer
 
         // Define the deploy
         verbose('['.$stage.'] Creating new release directory and pulling from remote');
+
+        // Trying to escape special characters #6
+        $git = addcslashes(config('laravel-deploy-helper.stages.'.$stage.'.git.http'), '$&');
         SSH::execute($stage, [
             'mkdir '.$home.'/releases/'.$releaseName,
             'cd '.$home.'/releases/'.$releaseName,
-            'git clone -b '.$branch.' '.config('laravel-deploy-helper.stages.'.$stage.'.git.http').' .',
+            'git clone -b '.$branch.' '.$git.' .',
         ]);
 
         // Pre-flight for shared stuff
@@ -112,12 +114,14 @@ class Deployer
         ]);
 
         // Remove old deploys
-        $items = [];
-        foreach ($toRemove as $dir => $val) {
-            $items[] = 'echo "Removing release '.$dir.'" && rm -rf '.$home.'/releases/'.$dir;
+        if (isset($toRemove) && is_array($toRemove)) {
+            $items = [];
+            foreach ($toRemove as $dir => $val) {
+                $items[] = 'echo "Removing release '.$dir.'" && rm -rf '.$home.'/releases/'.$dir;
+            }
+            verbose('['.$stage.'] Cleaning up old releases');
+            SSH::execute($stage, $items);
         }
-        verbose('['.$stage.'] Cleaning up old releases');
-        SSH::execute($stage, $items);
 
         $ldh[$releaseName] = true;
 
