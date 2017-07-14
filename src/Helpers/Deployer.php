@@ -55,7 +55,7 @@ class Deployer
 
         // Check versions
         // Operators: http://php.net/manual/en/function.version-compare.php
-        verbose('['.$stage.'] Checking dependencies. Migth take a minute.');
+        verbose('['.$stage.'] Checking dependencies. Might take a minute.');
         foreach ($versions as $app => $version) {
             SSH::checkAppVersion($connection, $app, $version);
         }
@@ -63,12 +63,16 @@ class Deployer
         // Define the deploy
         verbose('['.$stage.'] Creating new release directory and pulling from remote');
 
-        // Trying to escape special characters #6
-        $git = addcslashes(config('laravel-deploy-helper.stages.'.$stage.'.git.http'), '$&');
+        $url = config('laravel-deploy-helper.stages.'.$stage.'.git.http');
+        // Fixes https://github.com/DALTCORE/laravel-deploy-helper/issues/6#issuecomment-315124310
+        if ($url === null) {
+            $url = config('laravel-deploy-helper.stages.'.$stage.'.git');
+        }
+
         SSH::execute($stage, [
             'mkdir '.$home.'/releases/'.$releaseName,
             'cd '.$home.'/releases/'.$releaseName,
-            'git clone -b '.$branch.' '.$git.' .',
+            'git clone -b '.$branch.' '."'".$url."'".' .',
         ]);
 
         // Pre-flight for shared stuff

@@ -25,6 +25,13 @@ class SSH
         return config('laravel-deploy-helper.stages.'.$stage.'.remote.root');
     }
 
+    /**
+     * @param \Collective\Remote\Connection $connection
+     * @param                               $app
+     * @param                               $requestedVersion
+     *
+     * @return bool|mixed
+     */
     public static function checkAppVersion(Connection $connection, $app, $requestedVersion)
     {
         $currVer = null;
